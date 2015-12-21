@@ -2,7 +2,7 @@ import sys
 import time
 from datetime import date, datetime
 from decimal import Decimal
-from .types import OrientRecordLink, OrientRecord, OrientBinaryObject
+from .otypes import OrientRecordLink, OrientRecord, OrientBinaryObject
 from .exceptions import PyOrientBadMethodCallException
 
 
@@ -136,7 +136,7 @@ class OrientSerializationCSV(object):
             try:
                 ret = "[" + ','.join(
                     map(
-                        lambda elem: self.parse_value(type(value[0])(elem))
+                        lambda elem: self._parse_value(type(value[0])(elem))
                         if not isinstance(value[0], OrientRecordLink)
                         else elem.get_hash(),
                         value
@@ -145,7 +145,7 @@ class OrientSerializationCSV(object):
                 raise Exception("wrong type commistion")
         elif isinstance(value, dict):
             ret = "{" + ','.join(map(
-                lambda elem: '"' + elem + '":' + self.parse_value(value[elem]),
+                lambda elem: '"' + elem + '":' + self._parse_value(value[elem]),
                 value)) + '}'
         elif isinstance(value, OrientRecord):
             ret = "(" + self.__encode(value) + ")"
@@ -518,6 +518,7 @@ class OrientSerializationCSV(object):
 
         return [OrientBinaryObject(collected), content[( i + 1 ):]]
 
+    @staticmethod
     def _parse_binary(content):
         """
           Consume a binary field.
