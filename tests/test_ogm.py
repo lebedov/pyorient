@@ -49,16 +49,16 @@ class Drinks(AnimalsRelationship):
     label = 'drinks'
     modifier = String()
 
-class OGMAnimalsTestCaseBase(unittest.TestCase):
+class OGMAnimalsTestCase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(OGMAnimalsTestCaseBase, self).__init__(*args, **kwargs)
         self.g = None
 
     def setUp(self):
-        self.g = Graph(Config.from_url('animals', 'root', 'root'
-                                           , initial_drop=True))
+        g = self.g = Graph(Config.from_url('animals', 'root', 'root',
+                                           initial_drop=True))
 
-        g = self.g
+
         g.create_all(AnimalsNode.registry)
         g.create_all(AnimalsRelationship.registry)
 
@@ -125,7 +125,7 @@ class OGMAnimalsTestCase(OGMAnimalsTestCaseBase):
         nut = g.foods.create(name='nut', color='brown')
         rat_dislikes_nut = g.dislikes.create(rat, nut)
         mouse_eats_nut = g.eats.create(mouse, nut)
-        
+
         assert [rat] == nut.in_(Dislikes)
         assert [rat_dislikes_nut] == nut.inE(Dislikes)
 
